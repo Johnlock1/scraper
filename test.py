@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import urllib
 from urllib.request import Request, urlopen
 
-# request URL as an agent and save the HTML into wepage
+# request URL as an agent and save the HTML into webpage
 req = Request('https://www.car.gr/classifieds/cars/', headers={'User-Agent': 'Mozilla/5.0'})
 webpage = urlopen(req).read()
 soup = BeautifulSoup(webpage, "html.parser")
