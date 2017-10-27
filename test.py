@@ -13,7 +13,19 @@ classifieds = soup.find_all("div", class_="clsfd_list_row_group")
 # store all links into list
 prefix = "http://www.car.gr"
 links = []
-for classified in classifieds:
-    links.append(prefix + classifieds[0].a["href"])
+for index, classified in enumerate(classifieds):
+    links.append(prefix + classifieds[index].a["href"])
+#print(links)
 
-print(links)
+# store all cars' brand and model into list
+brands = soup.find_all("span", class_="p_t")
+
+cars = []
+for index, brand in enumerate(brands):
+    car = []
+    car.append(brands[index].find(itemprop="brand").string)
+    car.append(brands[index].find(itemprop="model").string)
+    cars.append(car)
+
+print(index)
+
