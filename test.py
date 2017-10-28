@@ -10,12 +10,11 @@ soup = BeautifulSoup(webpage, "html.parser")
 # save the HTML inside every classified's div in one page
 classifieds = soup.find_all("div", class_="clsfd_list_row_group")
 
-# store all links into list
-prefix = "http://www.car.gr"
-links = []
+# store all ids into list
+# prefix = "http://www.car.gr/"
+ids = []
 for index, classified in enumerate(classifieds):
-    links.append(prefix + classifieds[index].a["href"])
-#print(links)
+    ids.append(classifieds[index].a["href"].replace('/','').split('-')[0])
 
 # store all cars' brand and model into list
 brands = soup.find_all("span", class_="p_t")
@@ -27,9 +26,9 @@ for index, brand in enumerate(brands):
     car.append(brands[index].find(itemprop="model").string)
     cars.append(car)
 
-# merge links list into cars list
-for index, car in enumerate(links):
-    cars[index].append(links[index])
-    
-print(cars)
+# merge ids list into cars list
+for index, car in enumerate(ids):
+    cars[index].append(ids[index])
 
+for car in cars:
+    print(car)
