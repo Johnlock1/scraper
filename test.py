@@ -27,5 +27,9 @@ for index, brand in enumerate(brands):
     car.append(brands[index].find(itemprop="model").string)
     cars.append(car)
 
-print(index)
+# merge links list into cars list
+for index, car in enumerate(links):
+    cars[index].append(links[index])
+    
+print(cars)
 
