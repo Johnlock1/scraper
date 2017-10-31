@@ -1,8 +1,12 @@
+from cs50 import SQL
 from bs4 import BeautifulSoup
 import urllib
 from urllib.request import Request, urlopen
 
+db = SQL("sqlite:///database.db")
 database = []
+
+url = "https://www.car.gr/classifieds/cars/?make=18"
 
 # request URL as an agent and save the HTML into webpage
 req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -18,7 +22,7 @@ pages = int((li[1].a["href"].split('pg=')[1]))
 for i in range(pages):
 
     # request URL as an agent and save the HTML into webpage
-    req = Request('https://www.car.gr/classifieds/cars/?pg={}'.format(i+1), headers={'User-Agent': 'Mozilla/5.0'})
+    req = Request('https://www.car.gr/classifieds/cars/?make=18&pg={}'.format(i+1), headers={'User-Agent': 'Mozilla/5.0'})
     webpage = urlopen(req).read()
     soup = BeautifulSoup(webpage, "html.parser")
 
@@ -62,13 +66,34 @@ for i in range(pages):
         car.insert(0, item)
         car.append(prices[index])
 
-    print("Page {}".format(i+1))
+    # print("Page {}".format(i+1))
+    # for car in cars:
+    #     print(car)
+    # print("\n")
+
     for car in cars:
-        print(car)
-    print("\n")
+        database.append(car)
 
-    database.append(cars)
+# iterate through every car in cars
+for index, row in enumerate(database):
+    car_id = database[index][0]
+    req = Request('https://www.car.gr/{}'.format(car_id), headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req).read()
+    soup = BeautifulSoup(webpage, "html.parser")
 
-for row in database:
-    print(row)
-    print("\n")
+    # append phone into cars
+    database[index].append(soup.find("h3", class_="details-header").string.split("Τηλέφωνο: ")[1].split(" ")[0])
+
+print("Starting database insertion")
+for index, row in enumerate(database):
+    print(index)
+    db.execute("INSERT INTO cars (car_id, make, model, year, price, phone) \
+            VALUES (:car_id, :make, :model, :year, :price, :phone)",
+            car_id=database[index][0],
+            make=database[index][1],
+            model=database[index][2],
+            year=database[index][3],
+            price=database[index][4],
+            phone=database[index][5])
+
+print("Success")
