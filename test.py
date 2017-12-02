@@ -16,13 +16,15 @@ soup = BeautifulSoup(webpage, "html.parser")
 # get number of total pages
 page = soup.find("ul", "pagination pull-right")
 li = page.find_all("li", class_="")
-pages = int((li[1].a["href"].split('pg=')[1]))
+pages = int(li[1].a["href"].split('pg=')[1])
+# pages = int(pages.split('&rg=')[0])
 
 # scrape multiple pages
 for i in range(pages):
 
     # request URL as an agent and save the HTML into webpage
-    req = Request('https://www.car.gr/classifieds/cars/?make=18&pg={}'.format(i+1), headers={'User-Agent': 'Mozilla/5.0'})
+    req = Request('{}'.format(url+'&pg=').format(i+1),
+                    headers={'User-Agent': 'Mozilla/5.0'})
     webpage = urlopen(req).read()
     soup = BeautifulSoup(webpage, "html.parser")
 
@@ -66,13 +68,15 @@ for i in range(pages):
         car.insert(0, item)
         car.append(prices[index])
 
-    # print("Page {}".format(i+1))
-    # for car in cars:
-    #     print(car)
-    # print("\n")
+    print("Page {}".format(i+1))
+    for car in cars:
+        print(car)
+    print("\n")
 
     for car in cars:
         database.append(car)
+
+print("End with pages")
 
 # iterate through every car in cars
 for index, row in enumerate(database):
@@ -87,13 +91,17 @@ for index, row in enumerate(database):
 print("Starting database insertion")
 for index, row in enumerate(database):
     print(index)
-    db.execute("INSERT INTO cars (car_id, make, model, year, price, phone) \
-            VALUES (:car_id, :make, :model, :year, :price, :phone)",
-            car_id=database[index][0],
-            make=database[index][1],
-            model=database[index][2],
-            year=database[index][3],
-            price=database[index][4],
-            phone=database[index][5])
+
+    # check if id is in database
+    result = db.execute("SELECT car_id FROM cars WHERE car_id = :car_id", car_id = database[index][0])
+    if result != 1:
+        db.execute("INSERT INTO cars (car_id, make, model, year, price, phone) \
+                VALUES (:car_id, :make, :model, :year, :price, :phone)",
+                car_id=database[index][0],
+                make=database[index][1],
+                model=database[index][2],
+                year=database[index][3],
+                price=database[index][4],
+                phone=database[index][5])
 
 print("Success")
