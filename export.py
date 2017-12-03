@@ -1,15 +1,15 @@
 from cs50 import SQL
 import xlsxwriter
 
-def export(table):
+def export(table, day):
     db = SQL("sqlite:///database.db")
 
     # create workbook
-    workbook = xlsxwriter.Workbook("cars2.xlsx")
+    workbook = xlsxwriter.Workbook("cars4.xlsx")
     worksheet = workbook.add_worksheet()
 
     # execute database query
-    selection = ("SELECT * FROM {}".format(table))
+    selection = ("SELECT * FROM {} WHERE date LIKE '{}'".format(table, day))
     query = db.execute(selection)
 
     row = 1
