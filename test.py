@@ -3,12 +3,9 @@ from bs4 import BeautifulSoup
 import urllib
 from urllib.request import Request, urlopen
 
-def scrape():
+def scrape(url):
     db = SQL("sqlite:///database.db")
     database = []
-
-    url = "https://www.car.gr/classifieds/cars/?offer_type=sale&rg=2&significant_damage=t&st=private"
-    # url = "https://www.car.gr/classifieds/cars/?make=18"
 
     # request URL as an agent and save the HTML into webpage
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
