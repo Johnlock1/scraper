@@ -5,11 +5,12 @@ def export(table, day):
     db = SQL("sqlite:///database.db")
 
     # create workbook
-    workbook = xlsxwriter.Workbook("cars4.xlsx")
+    filename = "cargr {}.xlsx".format(day)
+    workbook = xlsxwriter.Workbook(filename)
     worksheet = workbook.add_worksheet()
 
     # execute database query
-    selection = ("SELECT * FROM {} WHERE date LIKE '{}'".format(table, day))
+    selection = ("SELECT * FROM {} WHERE date LIKE '{}%'".format(table, day))
     query = db.execute(selection)
 
     row = 1
