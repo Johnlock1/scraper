@@ -33,7 +33,7 @@ def send_email(day, email):
     server.starttls()
 
     # login to server
-    password = "woehztaqpaieukaj"  # for gmail, get password from https://myaccount.google.com/lesssecureapps
+    password = "pass"  # for gmail, get password from https://myaccount.google.com/lesssecureapps
     server.login(fromaddr, password)
 
     # send message
